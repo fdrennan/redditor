@@ -173,15 +173,14 @@ reddit_by_url <-
 ```
 # Building a bot
 # ndexr is my subreddit - have at it if you want to mess around
-if (FALSE) {
-  ndexr <- reddit$subreddit('ndexr')
-  iterate(ndexr$stream$comments(), function(x) {
-    if(str_detect(x$body, 'googleit')) {
-      google_search <- str_trim(str_remove(x$body, "^.*]"))
-      google_search <- str_replace_all(google_search, " ", "+")
-      lmgtfy <- glue('https://lmgtfy.com/?q={google_search}')
-      x$reply(lmgtfy)
-    }
-  })
-}
+# Here, we iterate over existing comments as well as new ones as the come in
+ndexr <- reddit$subreddit('ndexr')
+iterate(ndexr$stream$comments(), function(x) {
+  if(str_detect(x$body, 'googleit')) {
+    google_search <- str_trim(str_remove(x$body, "^.*]"))
+    google_search <- str_replace_all(google_search, " ", "+")
+    lmgtfy <- glue('https://lmgtfy.com/?q={google_search}')
+    x$reply(lmgtfy)
+  }
+})
 ```
