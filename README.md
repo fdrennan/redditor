@@ -45,36 +45,6 @@ system(
   new_glue('echo RETICULATE_PYTHON=${HOME}/.virtualenvs/--VIRTUALENV_NAME--/bin/python >> .Renviron')
 )
 
-con = postgres_connector()
-praw = reticulate::import('praw')
-reddit = praw$Reddit(client_id=Sys.getenv('REDDIT_CLIENT'),
-                     client_secret=Sys.getenv('REDDIT_AUTH'),
-                     user_agent=Sys.getenv('USER_AGENT'),
-                     username=Sys.getenv('USERNAME'),
-                     password=Sys.getenv('PASSWORD'))
-
-
-response = get_user_comments(reddit = reddit, user = 'spez', limit = 10)
-
-dbWriteTable(
-  conn = con, name = 'user_comments', value = response, append = TRUE
-)
-
-perspective <-  get_url(
-  reddit,
-  'https://www.reddit.com/r/pics/comments/g01kku/this_perspective_graphite_drawing/'
-)
-
-dbWriteTable(
-  conn = con, name = 'posts', value = perspective, append = TRUE
-)
-
-
-politics <- get_subreddit(reddit, 'politics', limit = 30)
-dbWriteTable(
-  conn = con, name = 'hot_scrapes', value = politics, append = TRUE
-)
-
 ```
 
 
