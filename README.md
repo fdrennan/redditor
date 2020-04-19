@@ -89,7 +89,7 @@ reddit_by_url <-
 
 ```
 
-# BUILDING A BOT
+# BUILDING A BOT TO REPLY TO A COMMENT
 ```
 # Building a bot
 # ndexr is my subreddit - have at it if you want to mess around
@@ -105,18 +105,21 @@ iterate(ndexr$stream$comments(), function(x) {
 })
 ```
 
-# DOING SOMETHING WITH THE ALL STREAM
+# DOING SOMETHING WITH STREAMS
 ```
-str_detect_any <- function(string = NULL, pattern = NULL) {
-  any(str_detect(string = str_to_lower(string), pattern = pattern)) 
+# Do something with comments
+parse_comments_wrapper <- function(x) {
+  submission_value <- parse_comments(x)
+  glimpse(submission_value)
 }
-politics <- reddit_con$subreddit('all')
-iterate(politics$stream$comments(), function(x) {
-  if(str_detect_any(x$body, 
-                    c('trump', 'socialism', 'conservatism', 'biden'))) {
-    message(
-      glue("\n\n{x$author}\n{x$body}\nIs Submitter: {x$is_submitter}\nLink: {x$link_permalink}")
-    ) 
-  }
-})
+stream_comments(reddit_con, 'politics', parse_comments_wrapper)
+
+
+# Do something with submissions
+parse_submission_wrapper <- function(x) {
+  submission_value <- parse_meta(x)
+  glimpse(submission_value)
+}
+stream_submission(reddit_con, 'politics', parse_submission_wrapper)
+
 ```

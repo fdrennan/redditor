@@ -10,16 +10,17 @@ reddit_con = praw$Reddit(client_id=Sys.getenv('REDDIT_CLIENT'),
 
 
 
-submission_stream <- function(reddit, subreddit, callback) {
-  politics <- reddit_con$subreddit(subreddit)
-  iterate(politics$stream$submission(), callback)
+# Do something with comments
+parse_comments_wrapper <- function(x) {
+  submission_value <- parse_comments(x)
+  glimpse(submission_value)
 }
+stream_comments(reddit_con, 'politics', parse_comments_wrapper)
 
 
-get_submission <- function(x) {
-  print(pasrse_meta(x))
-  Sys.sleep(10)
+# Do something with submissions
+parse_submission_wrapper <- function(x) {
+  submission_value <- parse_meta(x)
+  glimpse(submission_value)
 }
-
-
-comment_stream(reddit_con, 'all', get_comments)
+stream_submission(reddit_con, 'politics', parse_submission_wrapper)
