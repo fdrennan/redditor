@@ -168,3 +168,20 @@ reddit_by_url <-
 # #   subreddit <chr>, subreddit_id <chr>, total_awards_received <dbl>, ups <dbl>, time_gathered_utc <dttm>
 
 ```
+
+BUILDING A BOT
+```
+# Building a bot
+# ndexr is my subreddit - have at it if you want to mess aroung
+if (FALSE) {
+  ndexr <- reddit$subreddit('ndexr')
+  iterate(ndexr$stream$comments(), function(x) {
+    if(str_detect(x$body, 'googleit')) {
+      google_search <- str_trim(str_remove(x$body, "^.*]"))
+      google_search <- str_replace_all(google_search, " ", "+")
+      lmgtfy <- glue('https://lmgtfy.com/?q={google_search}')
+      x$reply(lmgtfy)
+    }
+  })
+}
+```
