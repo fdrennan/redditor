@@ -122,4 +122,17 @@ parse_submission_wrapper <- function(x) {
 }
 stream_submission(reddit_con, 'politics', parse_submission_wrapper)
 
+# Store everything
+parse_comments_wrapper <- function(x) {
+  submission_value <- parse_comments(x)
+  if(!file_exists('stream.csv')) {
+    write_csv(x = submission_value, path = 'stream.csv', append = FALSE)
+  } else {
+    write_csv(x = submission_value, path = 'stream.csv', append = TRUE)
+  }
+  print(now(tzone = 'UTC') - submission_value$created_utc)
+}
+
+stream_comments(reddit_con, 'all', parse_comments_wrapper)
+
 ```

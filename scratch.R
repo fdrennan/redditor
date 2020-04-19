@@ -13,14 +13,20 @@ reddit_con = praw$Reddit(client_id=Sys.getenv('REDDIT_CLIENT'),
 # Do something with comments
 parse_comments_wrapper <- function(x) {
   submission_value <- parse_comments(x)
-  glimpse(submission_value)
+  if(!file_exists('stream.csv')) {
+    write_csv(x = submission_value, path = 'stream.csv', append = FALSE)
+  } else {
+    write_csv(x = submission_value, path = 'stream.csv', append = TRUE)
+  }
+  print(now(tzone = 'UTC') - submission_value$created_utc)
 }
-stream_comments(reddit_con, 'politics', parse_comments_wrapper)
+
+stream_comments(reddit_con, 'all', parse_comments_wrapper)
 
 
-# Do something with submissions
-parse_submission_wrapper <- function(x) {
-  submission_value <- parse_meta(x)
-  glimpse(submission_value)
-}
-stream_submission(reddit_con, 'politics', parse_submission_wrapper)
+# # Do something with submissions
+# parse_submission_wrapper <- function(x) {
+#   submission_value <- parse_meta(x)
+#   glimpse(submission_value)
+# }
+# stream_submission(reddit_con, 'politics', parse_submission_wrapper)
