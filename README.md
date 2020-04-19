@@ -51,6 +51,8 @@ system(
 # RUNNING THE SOFTWARE
 
 ```
+devtools::install_github('fdrennan/redditor')
+
 library(redditor)
 
 praw = reticulate::import('praw')
