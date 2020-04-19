@@ -172,7 +172,7 @@ reddit_by_url <-
 # BUILDING A BOT
 ```
 # Building a bot
-# ndexr is my subreddit - have at it if you want to mess aroung
+# ndexr is my subreddit - have at it if you want to mess around
 if (FALSE) {
   ndexr <- reddit$subreddit('ndexr')
   iterate(ndexr$stream$comments(), function(x) {
