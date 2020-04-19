@@ -8,20 +8,18 @@ reddit_con = praw$Reddit(client_id=Sys.getenv('REDDIT_CLIENT'),
                          username=Sys.getenv('USERNAME'),
                          password=Sys.getenv('PASSWORD'))
 
-str_detect_any <- function(string = NULL, pattern = NULL) {
-  any(str_detect(string = str_to_lower(string), pattern = pattern))
+
+
+submission_stream <- function(reddit, subreddit, callback) {
+  politics <- reddit_con$subreddit(subreddit)
+  iterate(politics$stream$submission(), callback)
 }
-politics <- reddit_con$subreddit('all')
-iterate(politics$stream$comments(), function(x) {
-  if(str_detect_any(x$body,
-                    c('trump', 'socialism', 'conservatism', 'biden'))) {
-    message(
-      glue("\n\n{x$author}\n{x$body}\nIs Submitter: {x$is_submitter}\nLink: {x$link_permalink}")
-    )
-  }
-})
 
 
+get_submission <- function(x) {
+  print(pasrse_meta(x))
+  Sys.sleep(10)
+}
 
 
-
+comment_stream(reddit_con, 'all', get_comments)

@@ -36,3 +36,9 @@ my_collect <- function(connection) {
     mutate_if(is.numeric, as.numeric) %>%
     collect
 }
+
+#' @export str_detect_any
+str_detect_any <- function(string = NULL, pattern = NULL) {
+  any(str_detect(string = str_to_lower(string), pattern = pattern))
+}
+
