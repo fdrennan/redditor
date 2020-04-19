@@ -120,7 +120,6 @@ parse_meta <- function(subreddit_data) {
     'author_fullname',
     'author_premium',
     'author_patreon_flair',
-    'author_premium',
     'can_gild',
     'can_mod_post',
     'clicked',
@@ -186,7 +185,41 @@ parse_meta <- function(subreddit_data) {
 
   colnames(meta_data) <- chosen_columns
 
-  meta_data
+  meta_data %>%
+    mutate_at(vars(starts_with('num')), as.numeric) %>%
+    mutate_at(vars(starts_with('is')), as.logical) %>%
+    mutate(
+      author_premium = as.logical(author_premium),
+      author_patreon_flair = as.logical(author_patreon_flair),
+      can_gild = as.logical(can_gild),
+      can_mod_post = as.logical(can_mod_post),
+      clicked = as.logical(clicked),
+      comment_limit = as.numeric(comment_limit),
+      created = as.numeric(created),
+      created_utc = as.POSIXct(x = as.numeric(created_utc), origin = "1970-01-01", tz = "UTC"),
+      downs = as.numeric(downs),
+      edited = as.logical(edited),
+      gilded = as.numeric(gilded),
+      hidden = as.logical(hidden),
+      hide_score = as.logical(hide_score),
+      locked = as.logical(locked),
+      media_only = as.logical(media_only),
+      no_follow = as.logical(no_follow),
+      over_18 = as.logical(over_18),
+      pwls = as.numeric(pwls),
+      quarantine = as.logical(quarantine),
+      saved = as.logical(saved),
+      score = as.numeric(score),
+      send_replies = as.logical(send_replies),
+      spoiler = as.logical(spoiler),
+      stickied = as.logical(stickied),
+      subreddit_subscribers = as.numeric(subreddit_subscribers),
+      total_awards_received = as.numeric(total_awards_received),
+      ups = as.numeric(ups),
+      upvote_ratio = as.numeric(upvote_ratio),
+      visited = as.logical(visited),
+      wls = as.numeric(wls)
+    )
 
 }
 
