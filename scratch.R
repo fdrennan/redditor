@@ -1,4 +1,5 @@
 library(redditor)
+library(biggr)
 
 praw = reticulate::import('praw')
 
@@ -7,8 +8,6 @@ reddit_con = praw$Reddit(client_id=Sys.getenv('REDDIT_CLIENT'),
                          user_agent=Sys.getenv('USER_AGENT'),
                          username=Sys.getenv('USERNAME'),
                          password=Sys.getenv('PASSWORD'))
-
-
 
 # Do something with comments
 parse_comments_wrapper <- function(x) {
@@ -21,7 +20,10 @@ parse_comments_wrapper <- function(x) {
   print(now(tzone = 'UTC') - submission_value$created_utc)
 }
 
-stream_comments(reddit_con, 'all', parse_comments_wrapper)
+stream_comments(reddit = reddit_con,
+                subreddit =  'all',
+                callback =  parse_comments_wrapper)
+
 
 
 # # Do something with submissions
