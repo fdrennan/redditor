@@ -22,5 +22,6 @@ if (preferred_size) {
   s3_upload_file(bucket = 'reddit-dumps', from = now_time_zip, to = now_time_zip, make_public = TRUE)
   file_delete(now_time_csv)
   file_delete(now_time_zip)
+  sns_send_message(phone_number = Sys.getenv('MY_PHONE'), message = 'File uploaded')
 }
 
