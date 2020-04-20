@@ -2,13 +2,6 @@ library(biggr)
 library(redditor)
 
 
-reticulate::virtualenv_install(envname = 'redditor', packages = 'praw', python = '/usr/bin/python3')
-install_python(method = 'virtualenv', envname = 'redditor')
-configure_aws(aws_access_key_id = Sys.getenv('AWS_ACCESS'),
-              aws_secret_access_key = Sys.getenv('AWS_SECRET'),
-              default.region = Sys.getenv('AWS_REGION'))
-
-
 while (TRUE) {
 
   preferred_size <-

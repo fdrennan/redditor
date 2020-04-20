@@ -15,7 +15,7 @@ con = postgres_connector()
 
 subs_to_scrape <-
   tbl(con, in_schema('public', 'subreddits')) %>%
-    filter(is.null(time_gathered)) %>%
+  filter(is.null(time_gathered)) %>%
   collect
 
 subs <-

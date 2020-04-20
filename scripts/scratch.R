@@ -20,13 +20,10 @@ parse_comments_wrapper <- function(x) {
   print(now(tzone = 'UTC') - submission_value$created_utc)
 }
 
+stream_comments(reddit = reddit_con,
+                subreddit =  'all',
+                callback =  parse_comments_wrapper)
 
-get_comments <- function() {
-  stream_comments(reddit = reddit_con,
-                  subreddit =  'all',
-                  callback =  parse_comments_wrapper)
-
-}
 
 
 # # Do something with submissions
