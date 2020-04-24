@@ -144,22 +144,22 @@ parse_meta <- function(subreddit_data) {
     'media_only',
     'name',
     'no_follow',
-    'num_comments',
-    'num_crossposts',
-    'num_duplicates',
+    # 'num_comments',
+    # 'num_crossposts',
+    # 'num_duplicates',
     'over_18',
-    'parent_whitelist_status',
+    # 'parent_whitelist_status',
     'permalink',
     'pinned',
-    'pwls',
+    # 'pwls',
     'quarantine',
     'saved',
-    'score',
+    # 'score',
     'selftext',
-    'send_replies',
+    # 'send_replies',
     'shortlink',
-    'spoiler',
-    'stickied',
+    # 'spoiler',
+    # 'stickied',
     'subreddit',
     'subreddit_id',
     'subreddit_name_prefixed',
@@ -167,12 +167,10 @@ parse_meta <- function(subreddit_data) {
     'subreddit_type',
     'thumbnail',
     'title',
-    'total_awards_received',
-    'ups',
-    'upvote_ratio',
-    'url',
-    'visited',
-    'wls'
+    # 'total_awards_received',
+    # 'ups',
+    # 'upvote_ratio',
+    'url'
   )
 
   meta_data <- as_tibble(t(tibble(map_chr(chosen_columns, function(x) {
@@ -189,37 +187,40 @@ parse_meta <- function(subreddit_data) {
     mutate_at(vars(starts_with('num')), as.numeric) %>%
     mutate_at(vars(starts_with('is')), as.logical) %>%
     mutate(
-      author_premium = as.logical(author_premium),
-      author_patreon_flair = as.logical(author_patreon_flair),
-      can_gild = as.logical(can_gild),
-      can_mod_post = as.logical(can_mod_post),
-      clicked = as.logical(clicked),
-      comment_limit = as.numeric(comment_limit),
-      created = as.numeric(created),
-      created_utc = as.POSIXct(x = as.numeric(created_utc), origin = "1970-01-01", tz = "UTC"),
-      downs = as.numeric(downs),
-      edited = as.logical(edited),
-      gilded = as.numeric(gilded),
-      hidden = as.logical(hidden),
-      hide_score = as.logical(hide_score),
-      locked = as.logical(locked),
-      media_only = as.logical(media_only),
-      no_follow = as.logical(no_follow),
-      over_18 = as.logical(over_18),
-      pwls = as.numeric(pwls),
-      quarantine = as.logical(quarantine),
-      saved = as.logical(saved),
-      score = as.numeric(score),
-      send_replies = as.logical(send_replies),
-      spoiler = as.logical(spoiler),
-      stickied = as.logical(stickied),
-      subreddit_subscribers = as.numeric(subreddit_subscribers),
-      total_awards_received = as.numeric(total_awards_received),
-      ups = as.numeric(ups),
-      upvote_ratio = as.numeric(upvote_ratio),
-      visited = as.logical(visited),
-      wls = as.numeric(wls)
+      created_utc = as.POSIXct(x = as.numeric(created_utc), origin = "1970-01-01", tz = "UTC")
     )
+  # %>%
+  #   mutate(
+  #     author_premium = as.logical(author_premium),
+  #     author_patreon_flair = as.logical(author_patreon_flair),
+  #     # can_gild = as.logical(can_gild),
+  #     can_mod_post = as.logical(can_mod_post),
+  #     clicked = as.logical(clicked),
+  #     comment_limit = as.numeric(comment_limit),
+  #     created = as.numeric(created),
+  #     ,
+  #     downs = as.numeric(downs),
+  #     edited = as.logical(edited),
+  #     # gilded = as.numeric(gilded),
+  #     hidden = as.logical(hidden),
+  #     hide_score = as.logical(hide_score),
+  #     locked = as.logical(locked),
+  #     media_only = as.logical(media_only),
+  #     no_follow = as.logical(no_follow),
+  #     over_18 = as.logical(over_18),
+  #     # pwls = as.numeric(pwls),
+  #     quarantine = as.logical(quarantine),
+  #     saved = as.logical(saved),
+  #     score = as.numeric(score),
+  #     send_replies = as.logical(send_replies),
+  #     spoiler = as.logical(spoiler),
+  #     stickied = as.logical(stickied),
+  #     subreddit_subscribers = as.numeric(subreddit_subscribers),
+  #     total_awards_received = as.numeric(total_awards_received),
+  #     ups = as.numeric(ups),
+  #     upvote_ratio = as.numeric(upvote_ratio)
+      # visited = as.logical(visited)
+    # )
 
 }
 
@@ -245,38 +246,67 @@ get_url = function(reddit, url) {
 }
 
 #' @export parse_comments
-parse_comments <- function(comment_data) {
+parse_comments <- function(comment_data, stream = FALSE) {
 
-  chosen_columns <-
-    c(
-      "author",
-      "author_fullname",
-      "author_patreon_flair",
-      "author_premium",
-      "body",
-      "can_gild",
-      "can_mod_post",
-      "controversiality",
-      "created",
-      "created_utc",
-      "depth",
-      "downs",
-      "fullname",
-      "id",
-      "is_root",
-      "is_submitter",
-      "link_id",
-      "name",
-      "no_follow",
-      "parent_id",
-      "permalink",
-      "score",
-      "submission",
-      "subreddit",
-      "subreddit_id",
-      "total_awards_received",
-      "ups"
-    )
+  if(stream) {
+    chosen_columns <-
+      c(
+        "author",
+        "author_fullname",
+        "author_patreon_flair",
+        "author_premium",
+        "body",
+        "can_gild",
+        "can_mod_post",
+        "created",
+        "created_utc",
+        "depth",
+        "fullname",
+        "id",
+        "is_root",
+        "is_submitter",
+        "link_id",
+        "name",
+        "no_follow",
+        "parent_id",
+        "permalink",
+        "submission",
+        "subreddit",
+        "subreddit_id"
+      )
+  } else {
+    chosen_columns <-
+      c(
+        "author",
+        "author_fullname",
+        "author_patreon_flair",
+        "author_premium",
+        "body",
+        "can_gild",
+        "can_mod_post",
+        "controversiality",
+        "created",
+        "created_utc",
+        "depth",
+        "downs",
+        "fullname",
+        "id",
+        "is_root",
+        "is_submitter",
+        "link_id",
+        "name",
+        "no_follow",
+        "parent_id",
+        "permalink",
+        "score",
+        "submission",
+        "subreddit",
+        "subreddit_id",
+        "total_awards_received",
+        "ups"
+      )
+  }
+
 
   resp <- map_chr(chosen_columns, function(z) {
 

@@ -23,7 +23,7 @@ parse_comments_wrapper <- function(x) {
 }
 
 stream_comments(reddit = reddit_con,
-                subreddit =  'all',
+                subreddit =  'pics',
                 callback =  parse_comments_wrapper)
 
 
@@ -34,3 +34,9 @@ stream_comments(reddit = reddit_con,
 #   glimpse(submission_value)
 # }
 # stream_submission(reddit_con, 'politics', parse_submission_wrapper)
+
+read_csv('scripts/stream.csv') %>%
+  filter(str_detect(subreddit, 'pics')) %>%
+  # filter(str_detect(author, 'stalwart')) %>%
+  pull(author)
+
