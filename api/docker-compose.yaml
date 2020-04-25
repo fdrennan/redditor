@@ -1,0 +1,11 @@
+version: '3.4'
+services:
+  redditapi:
+    image: redditorapi
+    command: /app/plumber.R
+    restart: always
+    ports:
+     - "8000:8000"
+    working_dir: /app
+    volumes:
+      - .:/app/.

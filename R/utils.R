@@ -42,3 +42,7 @@ str_detect_any <- function(string = NULL, pattern = NULL) {
   any(str_detect(string = str_to_lower(string), pattern = pattern))
 }
 
+#' @export i_like
+i_like <- function(string_value, query) {
+  str_detect(str_to_lower(string_value), query)
+}
