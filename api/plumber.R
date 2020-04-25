@@ -47,6 +47,9 @@ function(key = 'trump',
   )
 
   response <- tryCatch({
+    if (limit > 1000) {
+      stop('You are limited to 1000 posts at a time')
+    }
     # Run the algorithm
     tic()
     response$data <- find_posts(key = key, limit = limit, to_json = TRUE)
