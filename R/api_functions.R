@@ -43,3 +43,28 @@ mat_comments_by_second <- function(limit = 1000) {
 
   mat_comments_by_second
 }
+
+#' @export plot_stream
+plot_stream <- function(limit = 300) {
+  con = postgres_connector()
+  on.exit(dbDisconnect(conn = con))
+
+  data <-
+    tbl(con, in_schema('public', 'mat_comments_by_second')) %>%
+    mutate_if(is.numeric, as.numeric) %>%
+    arrange(desc(created_utc)) %>%
+    head(limit) %>%
+    collect
+
+  print(max(data$created_utc))
+
+  gg <-
+    data %>%
+    ggplot() +
+    aes(x = with_tz(created_utc, tzone = 'UTC'), y = n_observations) +
+    geom_point(size = 3/10) +
+    geom_line() +
+    ylim(c(0, max(data$n_observations) + 5))
+
+  return(gg)
+}

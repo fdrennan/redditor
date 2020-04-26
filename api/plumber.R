@@ -70,3 +70,15 @@ function(key = 'trump',
 }
 
 
+
+#* @serializer contentType list(type='image/png')
+#* @get /get_stocks
+get_stocks <- function(limit = 600) {
+
+  file <- 'plot.png'
+  p <- plot_stream(limit = limit)
+  p
+  ggsave(file,p)
+  readBin(file,'raw', n = file.info(file)$size)
+
+}
