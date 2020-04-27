@@ -69,6 +69,47 @@ function(key = 'trump',
 
 }
 
+#* @serializer unboxedJSON
+#* @get /get_summary
+function(key = 'trump',
+         limit = 100) {
+
+  limit = as.numeric(limit)
+
+  message(glue('Within get_stocks {Sys.time()}'))
+
+  # Build the response object (list will be serialized as JSON)
+  response <- list(
+    statusCode = 200,
+    data = "",
+    message = "Success!",
+    metaData = list(
+      runtime = 0
+    )
+  )
+
+  response <- tryCatch({
+    if (limit > 1000) {
+      stop('You are limited to 1000 posts at a time')
+    }
+    # Run the algorithm
+    tic()
+    response$data <- toJSON(get_summary())
+    timer <- toc(quiet = T)
+    response$metaData$runtime <- as.numeric(timer$toc - timer$tic)
+
+    return(response)
+  },
+  error = function(err) {
+    response$statusCode <- 400
+    response$message <- paste(err)
+
+    return(response)
+  })
+
+  return(response)
+
+}
 
 
 #* @serializer contentType list(type='image/png')

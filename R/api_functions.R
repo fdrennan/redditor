@@ -79,3 +79,55 @@ plot_stream <- function(limit = 300) {
 
   return(gg)
 }
+
+#' @export get_summary
+get_summary <- function() {
+  con = postgres_connector()
+  on.exit(dbDisconnect(conn = con))
+
+
+  stream_submission_meta_data <-
+    tbl(con, in_schema('public', 'stream_submission_meta_data')) %>%
+    filter(meta %in% 'time') %>%
+    mutate(table = 'stream_submission_meta_data') %>%
+    collect
+
+  streamall_meta_data <-
+    tbl(con, in_schema('public', 'streamall_meta_data')) %>%
+    mutate(table = 'streamall_meta_data') %>%
+    filter(meta %in% 'time') %>%
+    collect
+
+  streamall_authors <-
+    tbl(con, in_schema('public', 'streamall_meta_data')) %>%
+    mutate(table = 'streamall_meta_data') %>%
+    filter(meta == 'author') %>%
+    mutate(amount = as.numeric(amount)) %>%
+    arrange(desc(amount)) %>%
+    mutate(amount = as.character(amount)) %>%
+    head(30) %>%
+    collect
+
+  streamall_subreddits <-
+    tbl(con, in_schema('public', 'streamall_meta_data')) %>%
+    mutate(table = 'streamall_meta_data') %>%
+    filter(meta == 'subreddit') %>%
+    mutate(amount = as.numeric(amount)) %>%
+    arrange(desc(amount)) %>%
+    mutate(amount = as.character(amount)) %>%
+    head(30) %>%
+    collect
+
+
+  binder <-
+    stream_submission_meta_data %>%
+    bind_rows(streamall_meta_data) %>%
+    bind_rows(streamall_authors) %>%
+    bind_rows(streamall_subreddits) %>%
+    group_by(meta) %>%
+    mutate(id = row_number()) %>%
+    nest
+
+  binder
+
+}
