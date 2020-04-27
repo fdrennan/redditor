@@ -8,7 +8,8 @@ find_posts <- function(key, limit = 1000, to_json = FALSE) {
   })
 
   stream_submissions <-
-    tbl(con, in_schema('public', 'stream_submissions'))
+    tbl(con, in_schema('public', 'stream_submissions')) %>%
+    arrange(desc(created_utc))
 
 
   comments <-
@@ -45,7 +46,7 @@ mat_comments_by_second <- function(limit = 1000) {
 }
 
 #' @export plot_stream
-plot_stream <- function(limit = 300) {
+plot_stream <- function(limit = 300, timezone='UTC', granularity = '5 mins') {
   con = postgres_connector()
   on.exit(dbDisconnect(conn = con))
 
@@ -58,17 +59,16 @@ plot_stream <- function(limit = 300) {
 
   data <-
     data %>%
-    mutate(created_utc = round_date(created_utc, '5 mins')) %>%
+    mutate(created_utc = round_date(created_utc, granularity)) %>%
     group_by(created_utc) %>%
     summarise(n_observations = sum(n_observations))
 
   gg <-
     data %>%
     ggplot() +
-    aes(x = with_tz(created_utc, tzone = 'MST'), y = n_observations) +
+    aes(x = with_tz(created_utc, tzone = timezone), y = n_observations) +
     geom_point(size = 3/10) +
     geom_line() +
-    geom_smooth() +
     ylim(c(0, max(data$n_observations) + 5))
 
   gg <-

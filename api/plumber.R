@@ -114,11 +114,13 @@ function(key = 'trump',
 
 #* @serializer contentType list(type='image/png')
 #* @param limit
+#* @param timezone
+#* @param granularity
 #* @get /comment_plot
-comment_plot <- function(limit = 600) {
+comment_plot <- function(limit = 600, timezone='UTC', granularity = '5 mins') {
   limit = as.numeric(limit)
   file <- 'plot.png'
-  p <- plot_stream(limit = limit)
+  p <- plot_stream(limit = limit, timezone = timezone, granularity = granularity)
   p
   ggsave(file,p)
   readBin(file,'raw', n = file.info(file)$size)
