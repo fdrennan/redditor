@@ -56,15 +56,26 @@ plot_stream <- function(limit = 300) {
     head(limit) %>%
     collect
 
-  print(max(data$created_utc))
+  data <-
+    data %>%
+    mutate(created_utc = round_date(created_utc, '5 mins')) %>%
+    group_by(created_utc) %>%
+    summarise(n_observations = sum(n_observations))
 
   gg <-
     data %>%
     ggplot() +
-    aes(x = with_tz(created_utc, tzone = 'UTC'), y = n_observations) +
+    aes(x = with_tz(created_utc, tzone = 'MST'), y = n_observations) +
     geom_point(size = 3/10) +
     geom_line() +
+    geom_smooth() +
     ylim(c(0, max(data$n_observations) + 5))
+
+  gg <-
+    gg +
+    ggtitle('Number of Comments Gathered in 5 minute intervals') +
+    xlab('Time: MST') +
+    ylab('Number of Observations')
 
   return(gg)
 }
