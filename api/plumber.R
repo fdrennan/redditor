@@ -117,12 +117,20 @@ function() {
 #* @param granularity
 #* @param add_hours
 #* @param table
+#* @param width
+#* @param height
 #* @get /comment_plot
 comment_plot <- function(limit = 600,
                          timezone='MST',
                          granularity = '5 mins',
                          add_hours = 1,
-                         table = 'comments') {
+                         table = 'comments',
+                         width = NA,
+                         height = NA) {
+
+  width = as.numeric(width)
+  height = as.numeric(height)
+
   limit = as.numeric(limit)
   file <- 'plot.png'
   p <- plot_stream(limit = limit,
@@ -131,6 +139,6 @@ comment_plot <- function(limit = 600,
                    add_hours = add_hours,
                    table = table)
   p
-  ggsave(file,p)
+  ggsave(filename = file, plot = p, width = width, height = height)
   readBin(file,'raw', n = file.info(file)$size)
 }
