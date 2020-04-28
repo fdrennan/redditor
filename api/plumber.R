@@ -52,7 +52,7 @@ function(key = 'trump',
     }
     # Run the algorithm
     tic()
-    response$data <- find_posts(key = key, limit = limit, to_json = TRUE)
+    response$data <- find_posts(key = str_to_lower(key), limit = limit, to_json = TRUE)
     timer <- toc(quiet = T)
     response$metaData$runtime <- as.numeric(timer$toc - timer$tic)
 
@@ -71,8 +71,7 @@ function(key = 'trump',
 
 #* @serializer unboxedJSON
 #* @get /get_summary
-function(key = 'trump',
-         limit = 100) {
+function() {
 
   limit = as.numeric(limit)
 
@@ -116,11 +115,21 @@ function(key = 'trump',
 #* @param limit
 #* @param timezone
 #* @param granularity
+#* @param add_hours
+#* @param table
 #* @get /comment_plot
-comment_plot <- function(limit = 600, timezone='UTC', granularity = '5 mins') {
+comment_plot <- function(limit = 600,
+                         timezone='MST',
+                         granularity = '5 mins',
+                         add_hours = 1,
+                         table = 'comments') {
   limit = as.numeric(limit)
   file <- 'plot.png'
-  p <- plot_stream(limit = limit, timezone = timezone, granularity = granularity)
+  p <- plot_stream(limit = limit,
+                   timezone = timezone,
+                   granularity = granularity,
+                   add_hours = add_hours,
+                   table = table)
   p
   ggsave(file,p)
   readBin(file,'raw', n = file.info(file)$size)

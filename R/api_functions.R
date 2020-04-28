@@ -46,12 +46,25 @@ mat_comments_by_second <- function(limit = 1000) {
 }
 
 #' @export plot_stream
-plot_stream <- function(limit = 300, timezone='UTC', granularity = '5 mins') {
+plot_stream <- function(limit = 300,
+                        timezone='UTC',
+                        granularity = '1 mins',
+                        add_hours = 0,
+                        table = 'comments') {
+
+  needed_table <- switch(
+    table,
+    'comments' = {'mat_comments_by_second'},
+    'submissions' = {'mat_submissions_by_second'},
+  )
+
+
+
   con = postgres_connector()
   on.exit(dbDisconnect(conn = con))
 
   data <-
-    tbl(con, in_schema('public', 'mat_comments_by_second')) %>%
+    tbl(con, in_schema('public', needed_table)) %>%
     mutate_if(is.numeric, as.numeric) %>%
     arrange(desc(created_utc)) %>%
     head(limit) %>%
@@ -66,19 +79,21 @@ plot_stream <- function(limit = 300, timezone='UTC', granularity = '5 mins') {
   gg <-
     data %>%
     ggplot() +
-    aes(x = with_tz(created_utc, tzone = timezone), y = n_observations) +
-    geom_point(size = 3/10) +
-    geom_line() +
+    aes(x = with_tz(created_utc, tzone = timezone) + hours(add_hours), y = n_observations) +
+    geom_point(size = 1/10) +
+    geom_col() +
     ylim(c(0, max(data$n_observations) + 5))
 
   gg <-
     gg +
-    ggtitle('Number of Comments Gathered in 5 minute intervals') +
-    xlab('Time: MST') +
+    ggtitle(glue('Number of {table} gathered in {granularity} intervals')) +
+    xlab(glue('Time: {timezone}')) +
     ylab('Number of Observations')
 
   return(gg)
 }
+
+
 
 #' @export get_summary
 get_summary <- function() {
