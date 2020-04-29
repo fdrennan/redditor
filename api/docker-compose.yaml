@@ -9,6 +9,15 @@ services:
     working_dir: /app
     volumes:
       - .:/app/.
+  redditapitwo:
+    image: redditorapi
+    command: /app/plumber.R
+    restart: always
+    ports:
+     - "8001:8000"
+    working_dir: /app
+    volumes:
+      - .:/app/.
   mongo_db:
     image: 'mongo'
     container_name: 'ndexr_mongo'
@@ -26,4 +35,3 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
 volumes:
   document-keeper:
-
