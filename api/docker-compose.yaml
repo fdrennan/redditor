@@ -33,5 +33,15 @@ services:
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+  web:
+    image: nginx
+    volumes:
+     - ./nginx.conf:/etc/nginx/conf.d/mysite.template
+    ports:
+     - "80:80"
+    environment:
+     - NGINX_HOST=foobar.com
+     - NGINX_PORT=80
+    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/mysite.template > /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'"
 volumes:
   document-keeper:
